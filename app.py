@@ -1,15 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-import os  # ✅ Import os to read environment variables
+import os
 
 app = Flask(__name__)
-CORS(app)
 
-# ✅ Groq API key from environment variable
+# ✅ Make sure /chat allows cross-origin POST requests
+CORS(app, resources={r"/chat": {"origins": "*"}}, supports_credentials=True)
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL = "llama3-8b-8192"  # or "mixtral-8x7b-32768"
+MODEL = "llama3-8b-8192"
 
 TRIGGER_WORDS = ["suicide", "self-harm", "kill myself", "hurt me"]
 session_memory = {}
