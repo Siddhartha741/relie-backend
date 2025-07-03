@@ -1,19 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-import os
+import os  # ✅ For environment variables
 
 app = Flask(__name__)
+CORS(app)
 
-# ✅ Make sure /chat allows cross-origin POST requests
-CORS(app, resources={r"/chat": {"origins": "*"}}, supports_credentials=True)
-
+# ✅ Groq API key from environment variable
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL = "llama3-8b-8192"
+MODEL = "llama3-8b-8192"  # or "mixtral-8x7b-32768"
 
 TRIGGER_WORDS = ["suicide", "self-harm", "kill myself", "hurt me"]
 session_memory = {}
+
+# ✅ Added root route to avoid 404 when opening in browser
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ Relie backend is live. Use POST /chat to interact."
 
 @app.route("/chat", methods=["POST"])
 def chat():
