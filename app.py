@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
+import os  # ✅ Import os to read environment variables
 
 app = Flask(__name__)
 CORS(app)
 
-# Groq API key
-GROQ_API_KEY = "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"
+# ✅ Groq API key from environment variable
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 MODEL = "llama3-8b-8192"  # or "mixtral-8x7b-32768"
 
@@ -30,7 +31,6 @@ def chat():
 
     session_memory[user_id].append({"role": "user", "content": user_input})
 
-    # Build API request
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
@@ -54,7 +54,6 @@ def chat():
 
     session_memory[user_id].append({"role": "assistant", "content": bot_reply})
     return jsonify({"response": bot_reply})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
